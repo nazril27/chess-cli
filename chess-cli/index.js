@@ -10,31 +10,30 @@ import Knight from './src/pieces/Knight.js';
 
 function parseCommand(command) {
     const parts = command.toLowerCase().split(' ');
-    
+
     if (parts.length !== 2) return null;
 
-    const from = parts;
-    const to = parts;
+    const from = parts[0];
+    const to = parts[1];
 
     const cols = { 'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7 };
 
     if (from.length !== 2 || to.length !== 2) return null;
 
-    const fromCol = cols[from[0][0]];
-    const fromRow = 8 - parseInt(from[0][1]);
+    const fromCol = cols[from[0]];
+    const fromRow = 8 - parseInt(from[1]);
 
-    const toCol = cols[to[1][0]];
-    const toRow = 8 - parseInt(to[1][1]);
+    const toCol = cols[to[0]];
+    const toRow = 8 - parseInt(to[1]);
 
     if ([fromCol, fromRow, toCol, toRow].some(val => val === undefined || isNaN(val) || val < 0 || val > 7)) {
         return null;
     }
-    //console.log({ fromRow, fromCol, toRow, toCol });
+
     return { fromRow, fromCol, toRow, toCol };
 }
 
 async function startGame() {
-    // Instansiasi papan catur
     const gameBoard = new Board();
 
     const rl = readline.createInterface({ input, output });
@@ -45,6 +44,7 @@ async function startGame() {
         gameBoard.render();
         const currentPlayer = isWhiteTurn ? 'Putih' : 'Hitam';
         const currentPlayerColor = isWhiteTurn ? 'white' : 'black';
+        const enemyColor = isWhiteTurn ? 'black' : 'white';
 
         if (gameBoard.isCheckMate(currentPlayerColor)) {
             console.log(`\n[SKAKMAT!] Raja ${currentPlayer} tidak bisa berkutik.`);
@@ -77,7 +77,7 @@ async function startGame() {
         }
 
         const expectedColor = isWhiteTurn ? 'white' : 'black';
-        if (pieceToMove.color !== expectedColor) {
+        if (pieceToMove.color !== currentPlayerColor) {
             console.log(`\n[Error] Itu bukan bidakmu! Sekarang giliran ${currentPlayer}.`);
             await rl.question('Tekan Enter untuk mencoba lagi...');
             continue;
@@ -99,7 +99,7 @@ async function startGame() {
 
         if (isCastling) {
             // 1. Tidak boleh Rokade kalau sedang di-Skak
-            if (gameBoard.isCheck(expectedColor)) {
+            if (gameBoard.isCheck(currentPlayerColor)) {
                 console.log("\n[Error] Ilegal! Tidak bisa Rokade saat sedang di-Skak.");
                 await rl.question("Tekan Enter untuk mencoba lagi...");
                 continue;
@@ -113,7 +113,7 @@ async function startGame() {
             gameBoard.grid[moveData.fromRow][midCol] = pieceToMove;
             gameBoard.grid[moveData.fromRow][moveData.fromCol] = '.';
             
-            const isMidSquareAttacked = gameBoard.isCheck(expectedColor);
+            const isMidSquareAttacked = gameBoard.isCheck(currentPlayerColor);
             
             // Kembalikan lagi ke semula
             gameBoard.grid[moveData.fromRow][moveData.fromCol] = pieceToMove;
@@ -131,7 +131,7 @@ async function startGame() {
         gameBoard.grid[moveData.toRow][moveData.toCol] = pieceToMove;
         gameBoard.grid[moveData.fromRow][moveData.fromCol] = '.';
 
-        const isKingInDanger = gameBoard.isCheck(expectedColor);
+        const isKingInDanger = gameBoard.isCheck(currentPlayerColor);
 
         gameBoard.grid[moveData.fromRow][moveData.fromCol] = pieceToMove;
         gameBoard.grid[moveData.toRow][moveData.toCol] = targetCellBackup;
@@ -178,7 +178,6 @@ async function startGame() {
             }
         }
         
-        const enemyColor = isWhiteTurn ? 'black' : 'white';
         if (gameBoard.isCheck(enemyColor)) {
             gameBoard.render();
             console.log(`\n[WARNING] SKAK! Raja ${enemyColor} dalam bahaya!`);

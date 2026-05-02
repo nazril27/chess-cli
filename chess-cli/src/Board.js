@@ -1,5 +1,4 @@
 // src/Board.js
-import chalk from 'chalk';
 import Piece from './pieces/Piece.js';
 import Pawn from './pieces/Pawn.js';
 import Knight from './pieces/Knight.js';
@@ -20,9 +19,9 @@ export default class Board {
             ['.', '.', '.', '.', '.', '.', '.', '.'],
             ['.', '.', '.', '.', '.', '.', '.', '.'],
             // Baris Pion Putih
-            [new Pawn('white', '♟'), new Pawn('white', '♟'), new Pawn('white', '♟'), new Pawn('white', '♟'), new Pawn('white', '♟'), new Pawn('white', '♟'), new Pawn('white', '♟'), new Pawn('white', '♟')],
+            [new Pawn('white', '♙'), new Pawn('white', '♙'), new Pawn('white', '♙'), new Pawn('white', '♙'), new Pawn('white', '♙'), new Pawn('white', '♙'), new Pawn('white', '♙'), new Pawn('white', '♙')],
             // Baris Putih (Index 7)
-            [new Rook('white', '♜'), new Knight('white', '♞'), new Bishop('white', '♝'), new Queen('white', '♛'), new King('white', '♚'), new Bishop('white', '♝'), new Knight('white', '♞'), new Rook('white', '♜')]
+            [new Rook('white', '♖'), new Knight('white', '♘'), new Bishop('white', '♗'), new Queen('white', '♕'), new King('white', '♔'), new Bishop('white', '♗'), new Knight('white', '♘'), new Rook('white', '♖')]
         ];
 
     }
@@ -38,23 +37,24 @@ export default class Board {
             for (let col = 0; col < 8; col++) {
                 const cell = this.grid[row][col];
         
-                const isLightSquare = (row + col) % 2 === 0;
+                // const isLightSquare = (row + col) % 2 === 0;
                 
                 // Menggunakan warna Hex agar lebih presisi. 
                 // Kamu bisa ganti kode hex ini sesuai selera estetikamu.
-                const applyBackground = isLightSquare 
-                    ? chalk.bgHex('#a3a3a3') // Abu-abu terang
-                    : chalk.bgHex('#404040'); // Abu-abu gelap
+                // const applyBackground = isLightSquare 
+                //     ? chalk.bgHex('#a3a3a3') // Abu-abu terang
+                //     : chalk.bgHex('#404040'); // Abu-abu gelap
                 
                 if (cell !== '.') {
                     const symbol = cell.symbol;
-                    const styledPiece = cell.color === 'white'
-                        ? chalk.whiteBright(symbol)
-                        : chalk.black(symbol);
+                    // const styledPiece = cell.color === 'white'
+                    //     ? chalk.whiteBright(symbol)
+                    //     : chalk.white(symbol);
 
-                    rowStr += applyBackground(styledPiece + ' ');
+                    //rowStr += applyBackground(styledPiece + ' ');
+                    rowStr += symbol + ' ';
                 } else {
-                    rowStr += applyBackground('  ');
+                    rowStr += '  ';
                 }
             }
             
